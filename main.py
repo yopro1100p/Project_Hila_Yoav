@@ -1,17 +1,10 @@
 import h5py
-import pandas as pd
-import numpy as np
-import McsPy
 import matplotlib.pyplot as plt
+import McsPy
+import numpy as np
+import pandas as pd
+
 import Chanels
-
-"""
-היי :) 
-1. הכוונה לאמפליטודת הספייק הממוצעת עבור כל אלקטרודה. בלי קשר יכול להיות מעניין להעביר את הדאטה למישור התדר ולמצוא שם מאפיינים נוספים 🤔
-2. ⁠באמת יש כל מיני הגדרות למה נחשב ברסט. אפשר להכניס תנאי סף שהמשתמש יצטרך להכניס בהתחלה- מה המרחק המקסימלי בין 2 ספייקים שעדיין נחשבים כחלק מאותו הברסט, ומה מינימום הספייקים שנחשבים לברסט
-3. ⁠טרשהולד הכוונה מהו הסף שקבענו שחריגה ממנו נחשבת ספייק- נגיד 6 סטיות תקן מהממוצע
-
-"""
 
 
 def Grouping_Spikes_Samples(Spikes_Samples_Vec_Time_Differences, Spikes_Samples_Vec_Time, l):

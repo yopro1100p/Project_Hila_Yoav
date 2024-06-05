@@ -1,9 +1,11 @@
 import time
+
 import h5py
-import pandas as pd
-import numpy as np
-import McsPy
 import matplotlib.pyplot as plt
+import McsPy
+import numpy as np
+import pandas as pd
+
 import Chanels
 
 file_path = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5"
