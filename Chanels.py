@@ -1,5 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from McsPy.McsData import RawData
 
 
@@ -23,7 +23,8 @@ class ChannelAnalyzer:
         self.spikes_samples_vec = None
         self.spikes_samples_vec_time = None
         self.group_of_spikes = None
-        self.max_values = None
+        self.max_values = None# the max values of spikes in electrod
+        self.max_values_time= None# the max time of spikes in electrod
 
     def get_channel_data(self, channel_id):
         # Get the data for the specified channel
@@ -36,7 +37,7 @@ class ChannelAnalyzer:
         self.spikes_samples_vec = self.samples_vec[np.argwhere(mask)].flatten()
         self.spikes_samples_vec_time = np.argwhere(mask).flatten()
 
-    def group_spikes(self, l=6):
+    def group_spikes(self):
         spikes_samples_vec_time_differences = np.diff(self.spikes_samples_vec_time)
         self.group_of_spikes = []
         temp_array = []
@@ -47,17 +48,18 @@ class ChannelAnalyzer:
                 self.group_of_spikes.append(temp_array)
                 temp_array = []
 
-        if temp_array or spikes_samples_vec_time_differences[-1] == 1:
+        # Check if spikes_samples_vec_time_differences is non-empty before accessing the last element
+        if temp_array or (spikes_samples_vec_time_differences.size > 0 and spikes_samples_vec_time_differences[-1] == 1):
             temp_array.append(self.spikes_samples_vec_time[-1])
             self.group_of_spikes.append(temp_array)
 
-        self.group_of_spikes = self.group_of_spikes[:l]  # limit to first l groups if needed
-
-    def find_max_in_groups(self):
+    def find_max_in_groups(self):# finding the max value and time in any groups of spikes
         self.max_values = []
+        self.max_values_time=[]
         for arr in self.group_of_spikes:
             max_value_index = np.argmax(self.samples_vec[arr])
-            self.max_values.append(arr[max_value_index])
+            self.max_values_time.append(arr[max_value_index])# the max time
+            self.max_values.append(self.samples_vec[arr[max_value_index]])#the max value
 
     def plot(self):
         for value in self.max_values:
