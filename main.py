@@ -79,7 +79,9 @@ def cells_with_high_std_deviation(array, threshold_factor=6):
 
 
 # Prompt the user to select an HDF5 file
-raw_data_path = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5"
+#raw_data_path = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5"# YOAV'S LINK
+raw_data_path = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/your_file.h5" #hilla's link
+
 
 # load HDF5 file
 data = McsPy.McsData.RawData(raw_data_path)
