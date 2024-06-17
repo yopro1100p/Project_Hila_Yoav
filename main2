@@ -1,0 +1,57 @@
+import matplotlib.pyplot as plt
+
+from Chanels2 import ChannelAnalyzer
+
+
+def main(file_path, channel_id):
+    analyzer = ChannelAnalyzer(file_path, channel_id)
+
+    # Plot original signal
+    plt.figure()
+    plt.plot(analyzer.time_vec, analyzer.samples_vec)
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude (V)')
+    plt.title('Original Signal')
+    plt.grid(True)
+    plt.show()
+
+
+    # Group and plot spikes
+    analyzer.group_spikes()
+    plt.figure()
+    for group in analyzer.group_of_spikes:
+        plt.scatter(analyzer.time_vec[group], analyzer.samples_vec[group])
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude (V)')
+    plt.title('Grouped Spikes')
+    plt.grid(True)
+    plt.show()
+
+    # Find and plot max values in groups
+    analyzer.find_max_in_groups()
+    plt.figure()
+    plt.plot(analyzer.time_vec, analyzer.samples_vec, label='Signal')
+    plt.scatter(np.array(analyzer.max_values_time) / analyzer.sampling_rate, analyzer.max_values, color='g', label='Max in Groups')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude (V)')
+    plt.title('Max Values in Groups')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # Calculate and print average spike amplitude
+    analyzer.find_average_spikes()
+    print(f'Average Spike Amplitude: {analyzer.average_spikes}')
+
+    # Find and print spike samples rate
+    analyzer.find_spikes_samples_rate()
+    print(f'Spike Samples Rate: {analyzer.spikes_samples_rate}')
+
+    # Plot final result with max values highlighted
+    analyzer.plot()
+
+# Usage example
+if __name__ == "__main__":
+    file_path = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/your_file.h5"
+    channel_id = 13
+    main(file_path, channel_id)
