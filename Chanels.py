@@ -29,6 +29,8 @@ class ChannelAnalyzer:
         Spikes_Samples_rate = None #the rate of the spikes in the electrode
         self.num_of_spikes= None#nm of spikes that we have in the electrod
         self.Group_Of_Bursts= None # the berst in the electrod' you need to give min num of spike in the berst and the max dist
+        self.total_rate_spikes= None
+        self.num_of_berst= None #the number of berst in the electrod, you need to give min num of spikes and max dist
 
     def get_channel_data(self, channel_id):
         # Get the data for the specified channel
@@ -42,6 +44,7 @@ class ChannelAnalyzer:
         self.spikes_samples_vec_time = np.argwhere(mask).flatten()
 
     def group_spikes(self):
+        self.find_spikes()
         spikes_samples_vec_time_differences = np.diff(self.spikes_samples_vec_time)
         self.group_of_spikes = []
         temp_array = []
@@ -56,7 +59,7 @@ class ChannelAnalyzer:
         if temp_array or (spikes_samples_vec_time_differences.size > 0 and spikes_samples_vec_time_differences[-1] == 1):
             temp_array.append(self.spikes_samples_vec_time[-1])
             self.group_of_spikes.append(temp_array)
-        return self.group_of_spikes
+        
 
     def find_max_in_groups(self):# finding the max value and time in any groups of spikes
         self.group_spikes()# run this function in order to have the group_of_spikes array
@@ -67,6 +70,7 @@ class ChannelAnalyzer:
             self.max_values_time.append(arr[max_value_index])# the max time
             self.max_values.append(self.samples_vec[arr[max_value_index]])#the max value
         
+        
 
     def find_Average_Spikes(self):#calculate the average of the max spikes- this is the amplitude
         self.Average_Spikes=0
@@ -75,13 +79,23 @@ class ChannelAnalyzer:
         return self.Average_Spikes
 
     def finding_Spikes_Samples_rate (self):#the rate of the spikes in the elctrode
-        self.Spikes_Samples_rate= np.diff(self.spikes_samples_vec_time)
+        self.find_max_in_groups()
+        self.Spikes_Samples_rate= np.diff(self.max_values_time)
         return self.Spikes_Samples_rate
+
+    def find_the_avarage_rate_between_spikes(self):
+        self.total_rate_spikes=np.mean(self.finding_Spikes_Samples_rate ())
+        return self.total_rate_spikes 
 
     def find_num_of_spikes (self):
         self.find_max_in_groups()
         self.num_of_spikes= len(self.max_values)
         return self.num_of_spikes
+
+    def find_num_of_berst(self, max_dist, min_spikes):
+        self.num_of_berst= len(self.find_burst(max_dist, min_spikes))
+        return self.num_of_berst
+
 
     def find_burst(self, max_dist, min_spkies):
             self.find_max_in_groups()

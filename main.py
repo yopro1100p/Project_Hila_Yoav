@@ -1,3 +1,6 @@
+"""
+this main file is the original one, it is tiuta  do not delete things
+"""
 import h5py
 import matplotlib.pyplot as plt
 import McsPy

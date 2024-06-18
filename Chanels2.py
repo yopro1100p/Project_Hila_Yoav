@@ -1,9 +1,12 @@
+"""
+this chanels2 file is in order to orginaize by  chatgpt to all ehat in the chanels
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 from McsPy.McsData import RawData
 
 
-class ChannelAnalyzer:
+class ChannelAnalyzer2:
     def __init__(self, file_path, channel_id, sampling_rate=10000):
         """
         Initialize the ChannelAnalyzer with the provided file path, channel ID, and sampling rate.
