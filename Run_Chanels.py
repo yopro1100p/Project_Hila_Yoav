@@ -16,19 +16,19 @@ start_time = time.time()  # Record the start time
 # Initialize a list to collect all max_values_time for setting xlim
 all_max_values_time = []
 
-# Iterate over electrodes
+#Iterate over electrodes
 for electrode in range(1, 120 ):
     analyzer = Chanels.ChannelAnalyzer(file_path, electrode)
     analyzer.find_max_in_groups()
 
     # Print max_values_time for debugging
-    print(f"Electrode {electrode}, max_values_time: {analyzer.max_values_time}")
+    print(f"Electrode {electrode+1}, max_values_time: {analyzer.max_values_time}" ,color="red")
 
     # Collect max_values_time for setting xlim
     all_max_values_time.extend(analyzer.max_values_time)
     
     # Plot spikes for the current electrode
-    plt.scatter(analyzer.max_values_time, [electrode] * len(analyzer.max_values_time), color='blue',s=1)
+    plt.scatter(analyzer.max_values_time, [electrode+1] * len(analyzer.max_values_time), color='blue',s=1)
 
 end_time = time.time()  # Record the end time
 
