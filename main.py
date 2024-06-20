@@ -154,7 +154,7 @@ k = 0
 
 for arr in Group_Of_Spikes:
     if k != l:
-        max_value_index = np.argmax(Samples_Vec[arr])
+        max_value_index = np.argmax(np.abs(Samples_Vec[arr]))
 
         max_values.append(arr[max_value_index])
         # print(arr[max_value_index])

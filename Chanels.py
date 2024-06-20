@@ -66,7 +66,7 @@ class ChannelAnalyzer:
         self.max_values = []
         self.max_values_time=[]
         for arr in self.group_of_spikes:
-            max_value_index = np.argmax(self.samples_vec[arr])
+            max_value_index = np.argmax(np.abs(self.samples_vec[arr]))
             self.max_values_time.append(arr[max_value_index])# the max time
             self.max_values.append(self.samples_vec[arr[max_value_index]])#the max value
         
