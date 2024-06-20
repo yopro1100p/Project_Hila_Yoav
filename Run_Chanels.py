@@ -17,10 +17,8 @@ start_time = time.time()  # Record the start time
 all_max_values_time = []
 
 # Iterate over electrodes
-for electrode in range(1, 6):
+for electrode in range(1, 120 ):
     analyzer = Chanels.ChannelAnalyzer(file_path, electrode)
-    analyzer.find_spikes()
-    analyzer.group_spikes()
     analyzer.find_max_in_groups()
 
     # Print max_values_time for debugging
@@ -44,7 +42,7 @@ elapsed_time = end_time - start_time  # Calculate the elapsed time
 print(f"Elapsed time: {elapsed_time} seconds")
 
 # Set plot labels and grid
-plt.xlabel('Time (s)')
+plt.xlabel('Time (micro sec)')
 plt.ylabel('Electrodes')
 plt.grid(True)
 
