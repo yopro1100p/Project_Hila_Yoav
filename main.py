@@ -169,7 +169,7 @@ for value in max_values:
     plt.axvline(x=value, ymin=0, ymax=0.06, color='r', linestyle='-')
 
 plt.plot(Time_Vec, Samples_Vec)
-plt.xlabel('Micro Sec')
+plt.xlabel('Sec')
 plt.ylabel('Volt')
 plt.title(f'Signal for Channel {channel_id}')
 plt.grid(True)
