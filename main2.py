@@ -16,7 +16,7 @@ file_path = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/your_file.
 electrode= 13
 analyzer = Chanels.ChannelAnalyzer(file_path, electrode)
 print(f"for electrode num {electrode}")
-analyzer.group_spikes()
+analyzer.grouping_samples_by_spikes()
 print(f"the group of all point that over the threshhold in the time thy appeerd {analyzer.group_of_spikes}")
 analyzer.find_max_in_groups()
 print(f"the max in each group is the the spike himself, the spikes value: {analyzer.max_values_time}")

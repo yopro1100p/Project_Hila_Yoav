@@ -46,14 +46,14 @@ def find_burst(max_dist, min_spkies, Group_Of_Spikes):
     i = 0
     temp = []
     Group_Of_Bursts = []
-    for i in range(1, len(Group_Of_Spikes)-1):
+    for i in range(1, len(Group_Of_Spikes) - 1):
         if len(Group_Of_Spikes) == 1:
             temp.append(Group_Of_Spikes[i])
             if (len(temp) >= min_spkies):
                 Group_Of_Bursts.append(temp)
             return Group_Of_Bursts
 
-        if (Group_Of_Spikes[i+1][0] - Group_Of_Spikes[i][-1]) <= max_dist:
+        if (Group_Of_Spikes[i + 1][0] - Group_Of_Spikes[i][-1]) <= max_dist:
             temp.append(Group_Of_Spikes[i])
 
         else:
@@ -82,9 +82,8 @@ def cells_with_high_std_deviation(array, threshold_factor=6):
 
 
 # Prompt the user to select an HDF5 file
-#raw_data_path = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5"# YOAV'S LINK
-raw_data_path = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/your_file.h5" #hilla's link
-
+# raw_data_path = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5"# YOAV'S LINK
+raw_data_path = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/your_file.h5"  # hilla's link
 
 # load HDF5 file
 data = McsPy.McsData.RawData(raw_data_path)
