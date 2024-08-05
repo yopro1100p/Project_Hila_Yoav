@@ -17,23 +17,23 @@ try:
 except FileNotFoundError:
     # If file doesn't exist, create a new DataFrame
     data = {
-        'Electrode': [f'Electrode_{i + 1}' for i in range(20)],
-        'num_of_spikes': [0.0] * 20,
-        'num_of_bursts': [0.0] * 20,
-        'average_absolute_spikes': [0.0] * 20,
-        'total_rate_spikes': [0.0] * 20,
-        'Feature_5': [0.0] * 20,
-        'updated': [False] * 20  # New column to track updates
+        'Electrode': [f'Electrode_{i + 1}' for i in range(120)],
+        'num_of_spikes': [0.0] * 120,
+        'num_of_bursts': [0.0] * 120,
+        'average_absolute_spikes': [0.0] * 120,
+        'total_rate_spikes': [0.0] * 120,
+        'average_of_num_of_spikes': [0.0] * 120,
+        'updated': [False] * 120  # New column to track updates
     }
     df = pd.DataFrame(data)
 
 # Step 2: Ensure the columns are of type float
 df = df.astype({'num_of_spikes': 'float64', 'num_of_bursts': 'float64',
                 'average_absolute_spikes': 'float64', 'total_rate_spikes': 'float64',
-                'Feature_5': 'float64'})
+                'average_of_num_of_spikes': 'float64'})
 
 # Step 3: Perform calculations and update the DataFrame
-for electrode_num in range(0, 3):
+for electrode_num in range(10, 17):
     if not df.at[electrode_num, 'updated']:
         df.at[electrode_num, 'updated'] = True  # Set 'updated' to True for this Electrode
         analyzer = ChannelAnalyzer(file_path, electrode_num)
@@ -41,7 +41,8 @@ for electrode_num in range(0, 3):
         df.at[electrode_num, 'num_of_bursts'] = analyzer.num_of_burst
         df.at[electrode_num, 'average_absolute_spikes'] = analyzer.Average_Spikes
         df.at[electrode_num, 'total_rate_spikes'] = analyzer.total_rate_spikes
-        df.at[electrode_num, 'Feature_5'] = 4
+        df.at[electrode_num, 'average_of_num_of_spikes'] = 4
+
 
 # Step 3: Write the updated DataFrame back to the Excel file
 df.to_excel('example.xlsx', index=False)

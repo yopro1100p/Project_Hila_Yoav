@@ -21,46 +21,53 @@ class ChannelAnalyzer:
         self.samples_vec = self.get_channel_data(self.channel_id)
         self.time_vec = np.arange(len(self.samples_vec)) / self.sampling_rate
 
-        # Initialize spikes and groups
+        # variables of class
         self.spikes_samples_vec = None
         self.spikes_samples_vec_time = None
         self.group_of_spikes = None
         self.max_values = None  # the max values of spikes in electrod
         self.max_values_time = None  # the max time of spikes in electrod
-        self.Average_Spikes = None  # average of the spikes - amplitude
-        Spikes_Samples_rate = None  # the rate of the spikes in the electrode
-        self.num_of_spikes = None  # nm of spikes that we have in the electrod
+        self.Average_Spikes = 0  # average of the spikes - amplitude
+        self.Spikes_Samples_rate = 0  # the rate of the spikes in the electrode
+        self.num_of_spikes = 0  # nm of spikes that we have in the electrod
         self.Group_Of_Bursts = None  # the berst in the electrod' you need to give min num of spike in the berst and the max dist
-        self.total_rate_spikes = None
-        self.num_of_burst = None  # the number of berst in the electrod, you need to give min num of spikes and max dist
+        self.total_rate_spikes = 0
+        self.num_of_burst = 0  # the number of berst in the electrod, you need to give min num of spikes and max dist
         self.update_all()
 
+    # updates all variables of the class
     def update_all(self):
-        self.find_spikes()
-        self.grouping_samples_by_spikes()
-        self.find_max_in_groups()
-        self.find_Average_Spikes()
-        self.finding_Spikes_Samples_rate()
-        self.find_the_avarage_rate_between_spikes()
-        self.find_num_of_spikes()
+        if(self.find_spikes() == 0):
+            self.grouping_samples_by_spikes()
+            self.find_max_in_groups()
+            self.find_Average_Spikes()
+            self.finding_Spikes_Samples_rate()
+            self.find_the_average_rate_between_spikes()
+            self.find_num_of_spikes()
+            self.average_of_num_of_spikes()
 
+    # functions of the class
     # functions for getting the data from the file
     def get_channel_data(self, channel_id):
         # Get the data for the specified channel
         return self.analog_stream.get_channel_in_range(channel_id, 0, self.analog_stream.channel_data.shape[1])[0]
 
-    # functions of the class
     # finding the spikes that are above the threshold factor that it 6 times the standard deviation
     def find_spikes(self, threshold_factor=6):
         overall_std_deviation = np.std(self.samples_vec)
         threshold_value = threshold_factor * overall_std_deviation
         mask = np.abs(self.samples_vec - np.mean(self.samples_vec)) > threshold_value
+        # Check if mask is empty or all False
+        if np.all(~mask):  # ~mask means negation of mask
+            self.spikes_samples_vec = np.array([])
+            self.spikes_samples_vec_time = np.array([])
+            return 1
         self.spikes_samples_vec = self.samples_vec[np.argwhere(mask)].flatten()
         self.spikes_samples_vec_time = np.argwhere(mask).flatten()
+        return 0
 
     # creating a group of groups of samples such that every group of samples representing an entire spike
     def grouping_samples_by_spikes(self):
-        self.find_spikes()
         spikes_samples_vec_time_differences = np.diff(self.spikes_samples_vec_time)
         self.group_of_spikes = []
         temp_array = []
@@ -87,11 +94,11 @@ class ChannelAnalyzer:
             self.max_values_time.append(arr[max_value_index])  # the max time
             self.max_values.append(self.samples_vec[arr[max_value_index]])  # the max value
 
-
     def find_Average_Spikes(self):  # calculate the average of the max spikes- this is the amplitude
         self.Average_Spikes = 0
         self.find_max_in_groups()
-        self.Average_Spikes = np.mean(self.max_values)
+        if self.max_values != 0:
+            self.Average_Spikes = np.mean(self.max_values)
         return self.Average_Spikes
 
     def finding_Spikes_Samples_rate(self):  # the rate of the spikes in the elctrode
@@ -99,8 +106,9 @@ class ChannelAnalyzer:
         self.Spikes_Samples_rate = np.diff(self.max_values_time)
         return self.Spikes_Samples_rate
 
-    def find_the_avarage_rate_between_spikes(self):
-        self.total_rate_spikes = np.mean(self.finding_Spikes_Samples_rate())
+    def find_the_average_rate_between_spikes(self):
+        if self.max_values != 0:
+            self.total_rate_spikes = np.mean(self.finding_Spikes_Samples_rate())
         return self.total_rate_spikes
 
     def find_num_of_spikes(self):
@@ -134,6 +142,11 @@ class ChannelAnalyzer:
 
         return self.Group_Of_Bursts
 
+    # finds the average spikes occurrences in all bursts
+    def average_of_num_of_spikes(self):
+
+        return 1
+
     def plot(self):
         for value in self.max_values:
             value = value / (10 ** 4)
@@ -145,6 +158,3 @@ class ChannelAnalyzer:
         plt.title(f'Signal for Channel {self.channel_id}')
         plt.grid(True)
         plt.show()
-
-
-
