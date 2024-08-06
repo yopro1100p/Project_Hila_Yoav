@@ -30,20 +30,22 @@ class ChannelAnalyzer:
         self.Average_Spikes = 0  # average of the spikes - amplitude
         self.Spikes_Samples_rate = 0  # the rate of the spikes in the electrode
         self.num_of_spikes = 0  # nm of spikes that we have in the electrod
-        self.Group_Of_Bursts = None  # the berst in the electrod' you need to give min num of spike in the berst and the max dist
+        self.Group_Of_Bursts = None  # the burst in the electrod you need to give min num of spike in the berst and the max dist
         self.total_rate_spikes = 0
         self.num_of_burst = 0  # the number of berst in the electrod, you need to give min num of spikes and max dist
+        self.active = True
         self.update_all()
 
     # updates all variables of the class
     def update_all(self):
-        if(self.find_spikes() == 0):
+        if self.find_spikes() == 0:
             self.grouping_samples_by_spikes()
             self.find_max_in_groups()
+            self.find_num_of_spikes()
+            self.active_check()
             self.find_Average_Spikes()
             self.finding_Spikes_Samples_rate()
             self.find_the_average_rate_between_spikes()
-            self.find_num_of_spikes()
             self.average_of_num_of_spikes()
 
     # functions of the class
@@ -94,15 +96,22 @@ class ChannelAnalyzer:
             self.max_values_time.append(arr[max_value_index])  # the max time
             self.max_values.append(self.samples_vec[arr[max_value_index]])  # the max value
 
+    def find_num_of_spikes(self):
+        self.num_of_spikes = len(self.max_values)
+        return self.num_of_spikes
+
+    # checking if the electrode is active
+    def active_check(self):
+        if self.num_of_spikes < 10:
+            self.active = False
+
     def find_Average_Spikes(self):  # calculate the average of the max spikes- this is the amplitude
         self.Average_Spikes = 0
-        self.find_max_in_groups()
         if self.max_values != 0:
             self.Average_Spikes = np.mean(self.max_values)
         return self.Average_Spikes
 
     def finding_Spikes_Samples_rate(self):  # the rate of the spikes in the elctrode
-        self.find_max_in_groups()
         self.Spikes_Samples_rate = np.diff(self.max_values_time)
         return self.Spikes_Samples_rate
 
@@ -111,17 +120,11 @@ class ChannelAnalyzer:
             self.total_rate_spikes = np.mean(self.finding_Spikes_Samples_rate())
         return self.total_rate_spikes
 
-    def find_num_of_spikes(self):
-        self.find_max_in_groups()
-        self.num_of_spikes = len(self.max_values)
-        return self.num_of_spikes
-
     def find_num_of_burst(self, max_dist, min_spikes):
         self.num_of_burst = len(self.find_burst(max_dist, min_spikes))
         return self.num_of_burst
 
     def find_burst(self, max_dist, min_spkies):
-        self.find_max_in_groups()
         count = 0
         temp = []
         self.Group_Of_Bursts = []

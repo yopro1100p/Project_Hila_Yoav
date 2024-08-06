@@ -23,7 +23,7 @@ except FileNotFoundError:
         'average_absolute_spikes': [0.0] * 120,
         'total_rate_spikes': [0.0] * 120,
         'average_of_num_of_spikes': [0.0] * 120,
-        'updated': [False] * 120  # New column to track updates
+        'active': [None] * 120  # New column to track updates
     }
     df = pd.DataFrame(data)
 
@@ -34,9 +34,9 @@ df = df.astype({'num_of_spikes': 'float64', 'num_of_bursts': 'float64',
 
 # Step 3: Perform calculations and update the DataFrame
 for electrode_num in range(10, 17):
-    if not df.at[electrode_num, 'updated']:
-        df.at[electrode_num, 'updated'] = True  # Set 'updated' to True for this Electrode
+    if df.at[electrode_num, 'active'] == None:
         analyzer = ChannelAnalyzer(file_path, electrode_num)
+        df.at[electrode_num, 'active'] = analyzer.active  # Check if the Electrode is active
         df.at[electrode_num, 'num_of_spikes'] = analyzer.num_of_spikes
         df.at[electrode_num, 'num_of_bursts'] = analyzer.num_of_burst
         df.at[electrode_num, 'average_absolute_spikes'] = analyzer.Average_Spikes
