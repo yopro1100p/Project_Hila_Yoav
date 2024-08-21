@@ -6,11 +6,11 @@ import numpy as np
 import pandas as pd
 from openpyxl import load_workbook
 
-file_path1 = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5"  # yoav's link
-file_path2 = ""
-# Step 1: Load existing Excel file (if any)
-#  you are starting with a new file, you can skip this step.
+file_path1 = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5"   # baseline - yoav link
+file_path2 = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5"   # stimulus 
 
+
+# Step 1: Load existing Excel file (if any)
 
 try:
     df = pd.read_excel('example.xlsx')
@@ -29,6 +29,7 @@ except FileNotFoundError:
         'average_absolute_spikes_stim': [0.0] * 120,
         'Spikes_rate_stim': [0.0] * 120,
         'spikes_per_bursts_stim': [0.0] * 120,
+        'diff': [None] * 120,
         'num_of_spikes_diff': [0.0] * 120,
         'num_of_bursts_diff': [0.0] * 120,
         'average_absolute_spikes_diff': [0.0] * 120,
@@ -48,12 +49,12 @@ df = df.astype({'num_of_spikes': 'float64', 'num_of_bursts': 'float64',
                 'spikes_per_bursts_diff': 'float64'})
 
 # Step 3: Perform calculations and update the DataFrame
-for electrode_num in range(10, 17):
+for electrode_num in range(3, 10):
     if df.at[electrode_num, 'active'] is None:
         analyzer1 = ChannelAnalyzer(file_path1, electrode_num)
-        # analyzer.plot(0) # baseline
-        # analyzer2 = ChannelAnalyzer(file_path2, electrode_num)
-        # analyzer.plot(1) #
+        analyzer1.plot(1)  # baseline
+        analyzer2 = ChannelAnalyzer(file_path2, electrode_num)
+        analyzer2.plot(0)  # stimulus
         df.at[electrode_num, 'active'] = analyzer1.active  # Check if the Electrode is active
         df.at[electrode_num, 'num_of_spikes'] = analyzer1.num_of_spikes
         df.at[electrode_num, 'average_absolute_spikes'] = analyzer1.Average_Spikes
@@ -61,6 +62,20 @@ for electrode_num in range(10, 17):
         if analyzer1.Num_Of_Bursts != 0:
             df.at[electrode_num, 'num_of_bursts'] = analyzer1.Num_Of_Bursts
             df.at[electrode_num, 'spikes_per_bursts'] = analyzer1.spikes_per_burst
+
+        df.at[electrode_num, 'num_of_spikes_stim'] = analyzer2.num_of_spikes
+        df.at[electrode_num, 'average_absolute_spikes_stim'] = analyzer2.Average_Spikes
+        df.at[electrode_num, 'Spikes_rate_stim'] = analyzer2.Spikes_rate
+        if analyzer2.Num_Of_Bursts != 0:
+            df.at[electrode_num, 'num_of_bursts_stim'] = analyzer2.Num_Of_Bursts
+            df.at[electrode_num, 'spikes_per_bursts_stim'] = analyzer2.spikes_per_burst
+
+        df.at[electrode_num, 'num_of_spikes_diff'] = analyzer2.num_of_spikes - analyzer1.Num_Of_Bursts
+        df.at[electrode_num, 'average_absolute_spikes_diff'] = analyzer2.Average_Spikes - analyzer1.Average_Spikes
+        df.at[electrode_num, 'Spikes_rate_diff'] = analyzer2.Spikes_rate - analyzer1.Spikes_rate
+        if analyzer2.Num_Of_Bursts != 0:
+            df.at[electrode_num, 'num_of_bursts_diff'] = analyzer2.Num_Of_Bursts - analyzer1.Num_Of_Bursts
+            df.at[electrode_num, 'spikes_per_bursts_diff'] = analyzer2.spikes_per_burst - analyzer1.spikes_per_burst
 
 # Step 3: Write the updated DataFrame back to the Excel file
 df.to_excel('example.xlsx', index=False)

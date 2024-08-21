@@ -160,7 +160,7 @@ class ChannelAnalyzer:
 
         return 0
 
-    def plot(self):
+    def plot(self, record_type):
         for value in self.max_values_time:
             value = value / (10 ** 4)
             plt.axvline(x=value, ymin=0, ymax=0.06, color='r', linestyle='-')
@@ -168,9 +168,9 @@ class ChannelAnalyzer:
         plt.plot(self.time_vec, self.samples_vec)
         plt.xlabel('Time (s)')
         plt.ylabel('Amplitude (V)')
-        # if baseline do this title
-        plt.title(f'Electrode: {self.channel_id}, {self.date}, baseline')
-        # if after stim do this title
-        # plt.title(f'Electrode: {self.channel_id}, {self.date}, after stim')
+        if record_type:
+            plt.title(f'Electrode: {self.channel_id}, {self.date}, baseline')
+        else:
+            plt.title(f'Electrode: {self.channel_id}, {self.date}, stimulus')
         plt.grid(True)
         plt.show()
