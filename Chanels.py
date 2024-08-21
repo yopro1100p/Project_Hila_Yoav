@@ -1,8 +1,9 @@
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
-from McsPy.McsData import RawData
 import pandas as pd
-import os
+from McsPy.McsData import RawData
 
 
 class ChannelAnalyzer:
@@ -36,6 +37,7 @@ class ChannelAnalyzer:
         self.spikes_per_burst = 0
         self.burst_rate = 0
         self.Num_Of_Bursts = 0
+        self.comparable=false
         self.update_all()
         # self.total_rate_spikes = 0 - exist above
         # self.num_of_burst = 0 - exist above
@@ -52,6 +54,8 @@ class ChannelAnalyzer:
             if self.find_burst(3, 3):
                 self.Num_Of_Bursts = len(self.Group_Of_Bursts)
                 self.burst_rate = self.Num_Of_Bursts / len(self.time_vec)
+            if (self.num_of_spikes>=10):
+                self.comparable=true
             # self.finding_Spikes_Samples_rate()
             # self.find_the_average_rate_between_spikes()
             # self.average_of_num_of_spikes()
