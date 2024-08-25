@@ -19,7 +19,7 @@ try:
 except FileNotFoundError:
     # If file doesn't exist, create a new DataFrame
     data = {
-        'Electrode': [f'Electrode_{i + 1}' for i in range(120)],
+        'Electrode': [f'{i + 1}' for i in range(120)],
         'num_of_spikes': [0.0] * 120,
         'num_of_bursts': [0.0] * 120,
         'average_absolute_spikes': [0.0] * 120,
