@@ -1,13 +1,15 @@
 import random
 import time
-from Chanels import ChannelAnalyzer
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from openpyxl import load_workbook
 
-file_path1 = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5"   # baseline - yoav link
-file_path2 = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5"   # stimulus 
+from Chanels import ChannelAnalyzer
+
+#file_path1 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-02-01T14-33-39McsRecording_MEA21009_baseline_A-00020.h5"   # baseline - yoav link
+#file_path2 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-02-01T14-54-37McsRecording_MEA21009_predictable_aferstim_A-00020.h5"   # stimulus 
 
 
 # Step 1: Load existing Excel file (if any)

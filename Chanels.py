@@ -32,7 +32,7 @@ class ChannelAnalyzer:
         self.spikes_samples_vec_time = None
         self.group_of_spikes = None
         self.max_values = None  # the max values of spikes in electrod
-        self.max_values_time = None  # the max time of spikes in electrod
+        self.max_values_time = []  # the max time of spikes in electrod
         self.Average_Spikes = 0  # average of the spikes - amplitude
         self.Spikes_rate = 0  # the rate of the spikes in the electrode
         self.num_of_spikes = 0  # nm of spikes that we have in the electrod
