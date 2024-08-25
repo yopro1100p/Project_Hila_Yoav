@@ -34,24 +34,29 @@ heatmap = np.full(grid_size, np.nan)  # Initialize with NaN
 
 # Fill the heatmap with spike counts
 for idx, location in channels_dict.items():
-    row = location[0]  # Assuming row is the first character (e.g., 'G')
-    col = int(location[1:])  # Assuming column is the number (e.g., '8')
+    row = location[0]  # Extract row character (e.g., 'G')
+    col = int(location[1:])  # Extract column number (e.g., '8')
     
     # Convert row character to index (assuming 'A' = 0, 'B' = 1, etc.)
     row_idx = ord(row) - ord('A')
+    
+    # Adjust for your specific grid layout if necessary
+    if row_idx >= 8:
+        row_idx -= 1
+    
     # Set the spike count in the heatmap
     if 0 <= row_idx < grid_size[0] and 0 <= col - 1 < grid_size[1]:
-        heatmap[ col - 1, row_idx] = spike_counts.get(idx, 0)
+        heatmap[row_idx, col - 1] = spike_counts.get(idx, 0)
 
 # Custom colormap
 colors = [(1, 1, 1), (1, 0, 0)]  # White to Red
-n_bins = 100  # Discretizes the interpolation into bins
+n_bins = 1000  # Discretizes the interpolation into bins
 cmap_name = 'dark_red'
 cm = mcolors.LinearSegmentedColormap.from_list(cmap_name, colors, N=n_bins)
 
 # Plot the Heatmap
 plt.figure(figsize=(12, 12))
-cax = plt.imshow(heatmap, cmap=cm, interpolation='nearest', vmin=0, vmax=np.max(heatmap))
+cax = plt.imshow(heatmap, cmap=cm, interpolation='nearest', vmin=0, vmax=np.nanmax(heatmap))
 plt.colorbar(cax, label='Spike Count')
 plt.title('Heatmap of Electrode Spike Counts')
 
@@ -59,5 +64,6 @@ plt.title('Heatmap of Electrode Spike Counts')
 for i in range(grid_size[0]):
     for j in range(grid_size[1]):
         if not np.isnan(heatmap[i, j]):
-            plt.text(j, i, f'{int(heatmap[i, j])}', ha='center', va='center', color='blue')
+            plt.text(j, i, f'{int(heatmap[i, j])}', ha='center', va='center', color='blue', fontsize=8)
+plt.gca().invert_yaxis()  # Invert y-axis to match typical heatmap orientation
 plt.show()
