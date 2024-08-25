@@ -1,11 +1,17 @@
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
-# Example spike counts dictionary (replace with actual spike counts)
-spike_counts = {i: np.random.randint(0, 100) for i in range(1, 121)}
+# Load spike counts from Excel file
+# Replace 'example.xlsx' with the actual path to your Excel file
+excel_file = 'example.xlsx'
+df = pd.read_excel(excel_file)
 
-# Channel dictionary
+# Assuming the Excel file has columns 'Electrode' and 'num_of_spikes'
+spike_counts = dict(zip(df['Electrode'], df['num_of_spikes']))
+
+# Channel dictionary (keep as it is)
 channels_dict = {
     120: "G8", 119: "G12", 118: "G11", 117: "G10", 116: "G9", 115: "H12", 114: "H11", 113: "H10",
     112: "H9", 111: "J12", 110: "J11", 109: "J10", 108: "H8", 107: "K11", 106: "K10", 105: "L10",
@@ -22,13 +28,9 @@ channels_dict = {
     5: "F10", 4: "F11", 3: "F12", 2: "F8", 1: "F7"
 }
 
-# Convert the electrode locations into a grid
-location_to_index = {location: idx for idx, location in channels_dict.items()}
-index_to_location = {idx: location for idx, location in channels_dict.items()}
-
 # Create a grid to match the MEA layout
 grid_size = (12, 12)  # Adjust grid size to match your actual layout
-heatmap = np.zeros(grid_size)
+heatmap = np.full(grid_size, np.nan)  # Initialize with NaN
 
 # Fill the heatmap with spike counts
 for idx, location in channels_dict.items():
@@ -37,10 +39,9 @@ for idx, location in channels_dict.items():
     
     # Convert row character to index (assuming 'A' = 0, 'B' = 1, etc.)
     row_idx = ord(row) - ord('A')
-    
     # Set the spike count in the heatmap
     if 0 <= row_idx < grid_size[0] and 0 <= col - 1 < grid_size[1]:
-        heatmap[row_idx, col - 1] = spike_counts[idx]
+        heatmap[ col - 1, row_idx] = spike_counts.get(idx, 0)
 
 # Custom colormap
 colors = [(1, 1, 1), (1, 0, 0)]  # White to Red
@@ -57,7 +58,6 @@ plt.title('Heatmap of Electrode Spike Counts')
 # Set labels for each electrode location
 for i in range(grid_size[0]):
     for j in range(grid_size[1]):
-        if heatmap[i, j] > 0:
+        if not np.isnan(heatmap[i, j]):
             plt.text(j, i, f'{int(heatmap[i, j])}', ha='center', va='center', color='blue')
-
 plt.show()

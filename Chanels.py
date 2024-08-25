@@ -27,7 +27,6 @@ class ChannelAnalyzer:
         self.time_vec = np.arange(len(self.samples_vec)) / self.sampling_rate
 
         # variables of class
-        self.update_all()
         self.spikes_samples_vec = None
         self.spikes_samples_vec_time = None
         self.group_of_spikes = None
@@ -42,6 +41,7 @@ class ChannelAnalyzer:
         self.burst_rate = 0
         self.Num_Of_Bursts = 0
         self.comparable = False
+        self.update_all()
         
 
     # updates all variables of the class
