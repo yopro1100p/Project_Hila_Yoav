@@ -8,17 +8,17 @@ from Chanels import ChannelAnalyzer
 file_path1 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-02-01T14-33-39McsRecording_MEA21009_baseline_A-00020.h5"  # Replace with the actual path to baseline file
 file_path2 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-02-01T14-54-37McsRecording_MEA21009_predictable_aferstim_A-00020.h5"  # Replace with the actual path to stimulus file
 
-# Extract the MEA number and the suffix from the second file path
-mea_number = re.search(r'MEA(\d+)', file_path2).group(1)
-suffix = re.search(r'_(predictable|baseline|other)_', file_path2).group(1)
+# Extract the experiment number from the file path using regex
+experiment_number = re.search(r'MEA(\d+)_', file_path1).group(1)
 
-# Define the output file name based on the extracted values
-output_file = f'{mea_number}_{suffix}_results.xlsx'
+# Define the output file name based on the experiment number
+output_file = f'{experiment_number}.xlsx'
 
-# Load existing Excel file or create a new DataFrame
+# Step 1: Load existing Excel file (if any)
 try:
     df = pd.read_excel(output_file)
 except FileNotFoundError:
+    # If file doesn't exist, create a new DataFrame
     data = {
         'Electrode': [f'{i + 1}' for i in range(120)],
         'num_of_spikes_baseline': [0.0] * 120,
@@ -34,6 +34,7 @@ except FileNotFoundError:
         'Spikes_rate_stim': [0.0] * 120,
         'spikes_per_bursts_stim': [0.0] * 120,
         'comperable_stim': [None] * 120,
+        # Columns for the differences between the recordings
         'diff': [None] * 120,
         'num_of_spikes_diff': [0.0] * 120,
         'num_of_spikes_diff_precent': [0.0] * 120,
@@ -45,13 +46,13 @@ except FileNotFoundError:
         'Spikes_rate_diff_precent': [0.0] * 120,
         'spikes_per_bursts_diff': [0.0] * 120,
         'spikes_per_bursts_diff_precent': [0.0] * 120,
-        'got_into_the_comper': [None] * 120,
+        'got_into_the_comper': [None] * 120,  # New column to track updates
         'negative_diff':[None]*120,
         'positive_diff':[None]*120,
     }
     df = pd.DataFrame(data)
 
-# Ensure columns are of type float
+# Step 2: Ensure the columns are of type float
 df = df.astype({
     'num_of_spikes_baseline': 'float64',
     'num_of_bursts_baseline': 'float64',
@@ -70,8 +71,8 @@ df = df.astype({
     'spikes_per_bursts_diff': 'float64'
 })
 
-# Perform calculations and update the DataFrame
-for electrode_num in range(8):
+# Step 3: Perform calculations and update the DataFrame
+for electrode_num in range(120):
     print(f"The number of the electrode now is: {electrode_num}")
     analyzer1 = ChannelAnalyzer(file_path1, electrode_num)
     analyzer2 = ChannelAnalyzer(file_path2, electrode_num)
@@ -100,10 +101,10 @@ for electrode_num in range(8):
     else:
         df.at[electrode_num, 'num_of_spikes_diff'] = analyzer2.num_of_spikes - analyzer1.num_of_spikes
         if analyzer2.num_of_spikes - analyzer1.num_of_spikes > 0:
-            df.at[electrode_num, 'positive_diff'] = 1
+            df.at[electrode_num, 'positive_diff'] = 'True'
         else:
             if analyzer2.num_of_spikes - analyzer1.num_of_spikes < 0:
-                df.at[electrode_num, 'negative_diff'] = 1
+                df.at[electrode_num, 'negative_diff'] = 'try'
         if analyzer2.num_of_spikes != 0:
             df.at[electrode_num, 'num_of_spikes_diff_precent'] = (analyzer2.num_of_spikes - analyzer1.num_of_spikes) * 100 / analyzer2.num_of_spikes
         df.at[electrode_num, 'average_absolute_spikes_diff'] = analyzer2.Average_Spikes - analyzer1.Average_Spikes
@@ -119,7 +120,7 @@ for electrode_num in range(8):
             df.at[electrode_num, 'spikes_per_bursts_diff_precent'] = (analyzer2.spikes_per_burst - analyzer1.spikes_per_burst) * 100 / analyzer2.spikes_per_burst
         df.at[electrode_num, 'got_into_the_comper'] = 'True'
 
-# Calculate averages and standard deviations
+# Step 4: Calculate averages and standard deviations
 average_std_columns_baseline_stim = [
     'num_of_spikes_baseline', 'num_of_bursts_baseline', 'average_absolute_spikes_baseline', 
     'Spikes_rate_baseline', 'spikes_per_bursts_baseline',
