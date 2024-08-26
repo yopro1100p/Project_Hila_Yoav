@@ -6,9 +6,15 @@ from Chanels import ChannelAnalyzer
 file_path1 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-02-01T14-33-39McsRecording_MEA21009_baseline_A-00020.h5"  # Replace with the actual path to baseline file
 file_path2 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-02-01T14-54-37McsRecording_MEA21009_predictable_aferstim_A-00020.h5"  # Replace with the actual path to stimulus file
 
+# Extract the experiment number from the file path using regex
+experiment_number = re.search(r'MEA(\d+)_', file_path1).group(1)
+
+# Define the output file name based on the experiment number
+output_file = f'{experiment_number}.xlsx'
+
 # Step 1: Load existing Excel file (if any)
 try:
-    df = pd.read_excel('example.xlsx')
+    df = pd.read_excel(output_file)
 except FileNotFoundError:
     # If file doesn't exist, create a new DataFrame
     data = {
@@ -65,6 +71,7 @@ df = df.astype({
 
 # Step 3: Perform calculations and update the DataFrame
 for electrode_num in range(120):
+    print("the num of electrod now is:"+electrode_num)
     analyzer1 = ChannelAnalyzer(file_path1, electrode_num)
     analyzer2 = ChannelAnalyzer(file_path2, electrode_num)
 
@@ -110,7 +117,26 @@ for electrode_num in range(120):
             df.at[electrode_num, 'spikes_per_bursts_diff'] = analyzer2.spikes_per_burst - analyzer1.spikes_per_burst
             df.at[electrode_num, 'spikes_per_bursts_diff_precent'] = (analyzer2.spikes_per_burst - analyzer1.spikes_per_burst)*100/analyzer2.spikes_per_burst
 
-# Step 4: Write the updated DataFrame back to the Excel file
-df.to_excel('example.xlsx', index=False)
 
-print('Data successfully updated and written to example.xlsx')
+# Step 4: Calculate averages and standard deviations
+average_std_columns = ['num_of_spikes', 'num_of_bursts', 'average_absolute_spikes', 
+                    'Spikes_rate', 'spikes_per_bursts', 'num_of_spikes_diff', 
+                    'num_of_bursts_diff', 'average_absolute_spikes_diff', 'Spikes_rate_diff', 
+                    'spikes_per_bursts_diff']
+
+# Initialize dictionaries to hold the results
+averages = {}
+std_devs = {}
+
+for col in average_std_columns:
+    averages[f'{col}_avg'] = df[f'{col} of record1'].mean()  # Compute average
+    std_devs[f'{col}_std'] = df[f'{col} of record1'].std()   # Compute standard deviation
+
+    # Add them to the DataFrame
+    df[f'{col}_avg'] = averages[f'{col}_avg']
+    df[f'{col}_std'] = std_devs[f'{col}_std']
+
+# Save the updated DataFrame to the Excel file
+df.to_excel(output_file, index=False)
+
+print(f'Data successfully updated and written to {output_file}')
