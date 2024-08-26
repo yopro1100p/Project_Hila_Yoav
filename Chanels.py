@@ -41,6 +41,7 @@ class ChannelAnalyzer:
         self.burst_rate = 0
         self.Num_Of_Bursts = 0
         self.comparable = False
+        self.num_of_spikes_in_berst=None
         self.update_all()
         
 
@@ -142,6 +143,8 @@ class ChannelAnalyzer:
             return 1
 
         return 0
+
+    def find_
 
     def plot(self, record_type):
         for value in self.max_values_time:
