@@ -5,14 +5,19 @@ import pandas as pd
 from Chanels import ChannelAnalyzer
 
 # Paths to the HDF5 files for the two recordings
-file_path1 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-02-01T14-33-39McsRecording_MEA21009_baseline_A-00020.h5"  # Replace with the actual path to baseline file
+file_path1 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-02-01T14-33-39McsRecording_MEA21009_predictable_baseline_A-00020.h5"  # Replace with the actual path to baseline file
 file_path2 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-02-01T14-54-37McsRecording_MEA21009_predictable_aferstim_A-00020.h5"  # Replace with the actual path to stimulus file
 
-# Extract the experiment number from the file path using regex
-experiment_number = re.search(r'MEA(\d+)_', file_path1).group(1)
+# Extract the date, MEA number, and type (predictable/controller)
+match = re.search(r'(\d{4}-\d{2}-\d{2})T\d{2}-\d{2}-\d{2}McsRecording_MEA(\d+)_(predictable|controller)', file_path2)
+if match:
+    date, mea_number, file_type = match.groups()
+    output_file_base = f'{date}_{mea_number}_{file_type}'
+else:
+    raise ValueError("File path doesn't match the expected pattern.")
 
-# Define the output file name based on the experiment number
-output_file = f'{experiment_number}.xlsx'
+# Define the output file name with the extracted base name
+output_file = f'{output_file_base}.xlsx'
 
 # Step 1: Load existing Excel file (if any)
 try:
