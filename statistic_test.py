@@ -1,50 +1,54 @@
+import os
+
 import numpy as np
 import pandas as pd
-from scipy.stats import mannwhitneyu, shapiro, ttest_ind
+import scipy.stats as stats
 
 # Load the data from the two experiments (predictable and controller)
-data_predictable = pd.read_excel('predictable.xlsx')
-data_controller = pd.read_excel('controller.xlsx')
+predictable_file = '2024-06-13_21009_predictable.xlsx'
+controller_file = '2024-06-13_21432_control.xlsx'
+predictable_df = pd.read_excel(predictable_file)
+controller_df = pd.read_excel(controller_file)
 
-# Define the columns you want to compare (e.g., standard deviations)
-column_to_compare = 'std_dev'  # Replace with the actual column name
+# Extract standard deviations for relevant metrics
+std_columns = [
+    'num_of_spikes_diff', 'num_of_bursts_diff', 'average_absolute_spikes_diff',
+    'Spikes_rate_diff', 'spikes_per_bursts_diff'
+]
 
-# Extract the relevant data
-predictable_data = data_predictable[column_to_compare].values
-controller_data = data_controller[column_to_compare].values
+# Initialize a dictionary to hold test results
+test_results = {}
 
-# Check for normality using the Shapiro-Wilk test
-shapiro_predictable = shapiro(predictable_data)
-shapiro_controller = shapiro(controller_data)
+# Perform statistical tests on the standard deviations
+for col in std_columns:
+    # Perform Shapiro-Wilk test for normality on both datasets
+    predictable_normality_p = stats.shapiro(predictable_df[col]).pvalue
+    controller_normality_p = stats.shapiro(controller_df[col]).pvalue
 
-# Function to decide on the test to perform
-def choose_statistical_test(data1, data2, shapiro1, shapiro2):
-    alpha = 0.05  # Significance level for normality test
-    
-    if shapiro1.pvalue > alpha and shapiro2.pvalue > alpha:
-        # Both datasets follow a normal distribution, use t-test
-        t_stat, p_value = ttest_ind(data1, data2)
-        test_name = "T-Test"
+    # If both datasets are normally distributed, use the t-test
+    if predictable_normality_p > 0.05 and controller_normality_p > 0.05:
+        test_stat, p_value = stats.ttest_ind(predictable_df[col], controller_df[col], equal_var=False)
+        test_type = "t-test"
     else:
-        # At least one dataset does not follow a normal distribution, use Mann-Whitney U test
-        t_stat, p_value = mannwhitneyu(data1, data2)
-        test_name = "Mann-Whitney U Test"
-    
-    return test_name, t_stat, p_value
+        # If not normally distributed, use the Mann-Whitney U test
+        test_stat, p_value = stats.mannwhitneyu(predictable_df[col], controller_df[col])
+        test_type = "Mann-Whitney U"
 
-# Perform the appropriate statistical test
-test_name, test_statistic, p_value = choose_statistical_test(
-    predictable_data, controller_data, shapiro_predictable, shapiro_controller
-)
+    test_results[col] = {"test_type": test_type, "statistic": test_stat, "p_value": p_value}
 
-# Print the results
-print(f"Statistical Test: {test_name}")
-print(f"Test Statistic: {test_statistic}")
-print(f"P-Value: {p_value}")
+# Display the results
+for metric, result in test_results.items():
+    print(f"{metric} - {result['test_type']} statistic: {result['statistic']}, p-value: {result['p_value']}")
 
-# Interpret the results
-alpha = 0.05
-if p_value < alpha:
-    print("Reject the null hypothesis: There is a significant difference between the two groups.")
-else:
-    print("Fail to reject the null hypothesis: No significant difference between the two groups.")
+# Convert test results to a DataFrame
+results_df = pd.DataFrame.from_dict(test_results, orient='index')
+
+# Create the folder if it doesn't exist
+output_folder = 'statistical_test_result'
+os.makedirs(output_folder, exist_ok=True)
+
+# Save the results to an Excel file in the specified folder
+output_file_name = os.path.join(output_folder, "statistical_test_results_" + predictable_file.replace('predictable', ''))
+results_df.to_excel(output_file_name)
+
+print(f"Results saved to {output_file_name}")
