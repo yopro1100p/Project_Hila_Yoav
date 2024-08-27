@@ -1,5 +1,6 @@
 import os
 
+import matplotlib.pyplot as plt
 import numpy as np
 from McsPy.McsData import RawData
 
@@ -142,6 +143,32 @@ class ChannelAnalyzer:
             return 1
 
         return 0
+    
+    def plot_spikes_and_bursts(self,spike_times, burst_times, electrode_number):
+        output_folder = "Spikes and Bursts"
+        os.makedirs(output_folder, exist_ok=True)
+        mea_number = self.file_path.split('_')[2][3:]  # "MEA21009" -> "21009"
+
+        # Extract date
+        date_str = self.file_path.split('_')[0].split('T')[0]  # "2024-02-01"
+
+        # Generate graph name
+        graph_name = f"#{mea_number}_{date_str}_electrode-num-{self.electrode}.png"
+        # Full path for saving the graph
+        full_graph_path = os.path.join(output_folder, graph_name)
+
+        plt.figure(figsize=(10, 4))
+        plt.eventplot(spike_times, colors='red', label='Spikes')
+        plt.eventplot(burst_times, colors='blue', lineoffsets=0.5, linelengths=0.5, label='Bursts')
+
+        plt.title(f'Electrode {self.electrode} - Spikes and Bursts')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Event')
+        plt.legend()
+        
+        # Save the plot or display it
+        plt.savefig(full_graph_path)
+        plt.show()
 
     def plot(self, record_type):
         for value in self.max_values_time:
