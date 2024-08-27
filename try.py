@@ -5,8 +5,8 @@ import pandas as pd
 from Chanels import ChannelAnalyzer
 
 # Paths to the HDF5 files for the two recordings
-file_path1 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-06-13T16-17-22McsRecording_MEA21432_control_baseline_A-00020.h5" # Replace with the actual path to baseline file
-file_path2 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-06-13T16-38-48McsRecording_MEA21432_control_afterstim_A-00020.h5"  # Replace with the actual path to stimulus file
+file_path1 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-06-13T17-31-24McsRecording_MEA23414_predictable_baseline_A-00020.h5" # Replace with the actual path to baseline file
+file_path2 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-06-13T17-53-27McsRecording_MEA23414_predictable_afterstim_A-00020.h5"  # Replace with the actual path to stimulus file
 
 # Extract the date, MEA number, and type (predictable/controller)
 match = re.search(r'(\d{4}-\d{2}-\d{2})T\d{2}-\d{2}-\d{2}McsRecording_MEA(\d+)_(predictable|control)', file_path2)
