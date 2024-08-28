@@ -1,4 +1,5 @@
 import os
+import re
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -42,6 +43,7 @@ class ChannelAnalyzer:
         self.burst_rate = 0
         self.Num_Of_Bursts = 0
         self.comparable = False
+        self.barst_start_time=None
         self.update_all()
         
 
@@ -59,6 +61,7 @@ class ChannelAnalyzer:
                 self.burst_rate = self.Num_Of_Bursts / len(self.time_vec)
             if self.num_of_spikes >= 10:
                 self.comparable = True
+            self.find_start_barst_time()
 
     def get_channel_data(self, channel_id):
         channel_data = self.analog_stream.get_channel_in_range(channel_id, 0, self.analog_stream.channel_data.shape[1])
@@ -144,43 +147,39 @@ class ChannelAnalyzer:
 
         return 0
     
-    def plot_spikes_and_bursts(self,spike_times, burst_times, electrode_number):
-        output_folder = "Spikes and Bursts"
-        os.makedirs(output_folder, exist_ok=True)
-        mea_number = self.file_path.split('_')[2][3:]  # "MEA21009" -> "21009"
+    def find_start_barst_time(self):
+        self.barst_start_time=[]
+        for i in range (1, len(self.Group_Of_Bursts) - 1):
+            self.barst_start_time.append(self.Group_Of_Bursts[1][1])
+        return 0
 
-        # Extract date
-        date_str = self.file_path.split('_')[0].split('T')[0]  # "2024-02-01"
 
-        # Generate graph name
-        graph_name = f"#{mea_number}_{date_str}_electrode-num-{self.electrode}.png"
-        # Full path for saving the graph
-        full_graph_path = os.path.join(output_folder, graph_name)
-
-        plt.figure(figsize=(10, 4))
-        plt.eventplot(spike_times, colors='red', label='Spikes')
-        plt.eventplot(burst_times, colors='blue', lineoffsets=0.5, linelengths=0.5, label='Bursts')
-
-        plt.title(f'Electrode {self.electrode} - Spikes and Bursts')
-        plt.xlabel('Time (s)')
-        plt.ylabel('Event')
-        plt.legend()
-        
-        # Save the plot or display it
-        plt.savefig(full_graph_path)
-        plt.show()
-
-    def plot(self, record_type):
+    def plot_spikes_and_bursts(self, record_type):
+        output_dir = 'spikes_and_barst'
+        os.makedirs(output_dir, exist_ok=True)
         for value in self.max_values_time:
             value = value / (10 ** 4)
             plt.axvline(x=value, ymin=0, ymax=0.06, color='r', linestyle='-')
 
+        for v in self.barst_start_time:
+            v = v / (10 ** 4)
+            plt.axvline(x=value, ymin=0.94, ymax=1, color='b', linestyle='-')
+        
+        pattern = r'(\d{4}-\d{2}-\d{2})T\d{2}-\d{2}-\d{2}McsRecording_MEA(\d+)_(predictable|control)_(afterstim|baseline)'
+
+        # Search for the pattern in the file path
+        match = re.search(pattern, self.file_path)
+        if match:
+            date_part = match.group(1)  # Extracts "2024-06-13"
+            mea_id = '#'+match.group(2)     # Extracts "23414"
+            last_segment = match.group(3)+'_'+ match.group(4) # Extracts "predictable" or "control"
+
+        # Generate graph name
+        graph_name = f"electrd_{self.channel_id}_{date_part}_{mea_id}_{last_segment}"
         plt.plot(self.time_vec, self.samples_vec)
         plt.xlabel('Time (s)')
-        plt.ylabel('Amplitude (V)')
-        if record_type:
-            plt.title(f'Electrode: {self.channel_id}, {self.date}, baseline')
-        else:
-            plt.title(f'Electrode: {self.channel_id}, {self.date}, stimulus')
+        plt.ylabel('Amplitude (microV)')
+        plt.title(graph_name)
         plt.grid(True)
+        plt.savefig(graph_name)
         plt.show()
