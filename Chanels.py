@@ -175,7 +175,7 @@ class ChannelAnalyzer:
             last_segment = match.group(3)+'_'+ match.group(4) # Extracts "predictable" or "control"
 
         # Generate graph name
-        graph_name = f"electrd_{self.channel_id}_{date_part}_{mea_id}_{last_segment}"
+        graph_name = f"{date_part}_{mea_id}_{last_segment}_electrd_{self.channel_id}"
         plt.plot(self.time_vec, self.samples_vec)
         plt.xlabel('Time (s)')
         plt.ylabel('Amplitude (microV)')
