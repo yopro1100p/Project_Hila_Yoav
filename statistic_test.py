@@ -5,8 +5,8 @@ import pandas as pd
 import scipy.stats as stats
 
 # Load the data from the two experiments (predictable and controller)
-predictable_file = '2024-06-13_21009_predictable.xlsx'
-controller_file = '2024-06-13_21432_control.xlsx'
+predictable_file = '2024-02-01_21009_predictable.xlsx'
+controller_file = '2024-02-01_20490_control.xlsx'
 predictable_df = pd.read_excel(predictable_file)
 controller_df = pd.read_excel(controller_file)
 
@@ -34,11 +34,19 @@ for col in std_columns:
         test_stat, p_value = stats.mannwhitneyu(predictable_df[col], controller_df[col])
         test_type = "Mann-Whitney U"
 
-    test_results[col] = {"test_type": test_type, "statistic": test_stat, "p_value": p_value}
+    # Check if the result is statistically significant (p-value < 0.05)
+    significance = "Significant" if p_value < 0.05 else "Not Significant"
+    
+    test_results[col] = {
+        "test_type": test_type,
+        "statistic": test_stat,
+        "p_value": p_value,
+        "significance": significance
+    }
 
 # Display the results
 for metric, result in test_results.items():
-    print(f"{metric} - {result['test_type']} statistic: {result['statistic']}, p-value: {result['p_value']}")
+    print(f"{metric} - {result['test_type']} statistic: {result['statistic']}, p-value: {result['p_value']}, {result['significance']}")
 
 # Convert test results to a DataFrame
 results_df = pd.DataFrame.from_dict(test_results, orient='index')
