@@ -6,8 +6,7 @@ import matplotlib.pyplot as plt
 from Chanels import ChannelAnalyzer
 
 # File path
-file_path =r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-05-21T15-22-34McsRecording_MEA21009_predictable_baseline_A-00020.h5"
-
+file_path =r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-06-13T17-31-24McsRecording_MEA23414_predictable_baseline_A-00020.h5"
 # Regex pattern to extract the date, MEA ID, and the last segment (predictable or control)
 pattern = r'(\d{4}-\d{2}-\d{2})T\d{2}-\d{2}-\d{2}McsRecording_MEA(\d+)_(predictable|control)_(afterstim|baseline)'
 
