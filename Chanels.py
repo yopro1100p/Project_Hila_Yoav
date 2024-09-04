@@ -14,7 +14,7 @@ class ChannelAnalyzer:
         self.dt = 1 / sampling_rate
 
         # Load the data
-        self.data = RawData(self.file_path)
+        self.data = RawData(self.file_path)# change this
         self.analog_stream = self.data.recordings[0].analog_streams[2]
         self.channel_data = self.analog_stream.channel_data
         self.date = self.data.date
@@ -56,7 +56,7 @@ class ChannelAnalyzer:
             self.active_check()
             self.find_Average_Spikes()
             self.Spikes_rate = self.num_of_spikes / len(self.time_vec)
-            if self.find_burst(3, 3):
+            if self.find_burst(3, 3):#change this to be - the num of burst 50 milisec 
                 self.Num_Of_Bursts = len(self.Group_Of_Bursts)
                 self.burst_rate = self.Num_Of_Bursts / len(self.time_vec)
             if self.num_of_spikes >= 10:
@@ -69,10 +69,10 @@ class ChannelAnalyzer:
             return None
         return channel_data[0]
 
-    def find_spikes(self, threshold_factor=6):
+    def find_spikes(self, threshold_factor=6):#change the formula to find spiks
         overall_std_deviation = np.std(self.samples_vec)
         threshold_value = threshold_factor * overall_std_deviation
-        mask = np.abs(self.samples_vec - np.mean(self.samples_vec)) > threshold_value
+        mask = np.abs(self.samples_vec) > threshold_value
         if np.all(~mask):
             self.spikes_samples_vec = np.array([])
             self.spikes_samples_vec_time = np.array([])
@@ -120,7 +120,7 @@ class ChannelAnalyzer:
             self.Average_Spikes = np.mean([abs(x) for x in self.max_values])
         return self.Average_Spikes
 
-    def find_burst(self, max_dist, min_spikes):
+    def find_burst(self, max_dist, min_spikes):# the dist is milisec?
         count = 0
         sum = 0
         temp = []

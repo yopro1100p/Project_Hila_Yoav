@@ -50,12 +50,12 @@ if match:
 
     # Save the plot in the 'raster_plot' directory
     output_filename = os.path.join(output_dir, f"{plot_title}.png")
-    plt.savefig(output_filename)
 
 
     # Show the plot
     plt.xlabel('Time (s)')
     plt.ylabel('Electrode')
+    plt.savefig(output_filename)
     plt.show()
 else:
     print("The file path does not match the expected pattern.")
