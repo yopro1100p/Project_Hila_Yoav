@@ -5,13 +5,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-# Ensure the 'heatmap' directory exists
-output_dir = 'heatmap'
-os.makedirs(output_dir, exist_ok=True)
-
-# Load spike counts from Excel file
-excel_file = '2024-06-13_23414_predictable.xlsx'
-df = pd.read_excel(excel_file)
 
 # Function to plot and save heatmap
 def plot_heatmap(spike_counts, title_prefix, excel_file, output_dir):
@@ -40,14 +33,14 @@ def plot_heatmap(spike_counts, title_prefix, excel_file, output_dir):
     for idx, location in channels_dict.items():
         row = location[0]  # Extract row character (e.g., 'G')
         col = int(location[1:])  # Extract column number (e.g., '8')
-        
+
         # Convert row character to index (assuming 'A' = 0, 'B' = 1, etc.)
         row_idx = ord(row) - ord('A')
-        
+
         # Adjust for your specific grid layout if necessary
         if row_idx >= 8:
             row_idx -= 1
-        
+
         # Set the spike count in the heatmap
         if 0 <= row_idx < grid_size[0] and 0 <= col - 1 < grid_size[1]:
             heatmap[row_idx, col - 1] = spike_counts.get(idx, 0)
@@ -76,6 +69,17 @@ def plot_heatmap(spike_counts, title_prefix, excel_file, output_dir):
     plt.savefig(image_filename, bbox_inches='tight', dpi=300)
     plt.show()
 
+# שמתי כהערה כדי שבקובץ שמפעיל הכל זה יעבוד, אם את רוצה להפעיל כמו לפני פשוט תורידי את הגרשיים ואל תפעילי את starter
+
+"""
+# Ensure the 'heatmap' directory exists
+output_dir = 'heatmap'
+os.makedirs(output_dir, exist_ok=True)
+
+# Load spike counts from Excel file
+excel_file = '2024-06-13_23414_predictable.xlsx'
+df = pd.read_excel(excel_file)
+
 # Plot and save the baseline heatmap
 spike_counts_baseline = dict(zip(df['Electrode'], df['num_of_spikes_baseline']))
 plot_heatmap(spike_counts_baseline, 'baseline', excel_file, output_dir)
@@ -83,3 +87,4 @@ plot_heatmap(spike_counts_baseline, 'baseline', excel_file, output_dir)
 # Plot and save the afterstim heatmap
 spike_counts_stim = dict(zip(df['Electrode'], df['num_of_spikes_stim']))
 plot_heatmap(spike_counts_stim, 'afterstim', excel_file, output_dir)
+"""

@@ -10,8 +10,8 @@ from McsPy.McsData import RawData
 from Chanels import ChannelAnalyzer
 
 # Prompt the user to select an HDF5 file
-# raw_data_path = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5" # YOAV'S LINK
-raw_data_path = r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-06-13T17-31-24McsRecording_MEA23414_predictable_baseline_A-00020.h5"
+raw_data_path = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5" # YOAV'S LINK
+# raw_data_path = r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-06-13T17-31-24McsRecording_MEA23414_predictable_baseline_A-00020.h5"
 
 # Define parameters
 sampling_rate = 10000  # sample rate in Hz
@@ -36,4 +36,4 @@ max_values = channel_analyzer.max_values
 Spikes_Samples_Vec_Time = channel_analyzer.spikes_samples_vec_time
 
 
-channel_analyzer.plot_spikes_and_bursts(record_type=True)
+channel_analyzer.plot_signal(record_type=True)
