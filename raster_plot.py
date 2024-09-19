@@ -5,9 +5,8 @@ import matplotlib.pyplot as plt
 
 from Chanels import ChannelAnalyzer
 
-
 # File path
-# file_path = r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-06-13T17-31-24McsRecording_MEA23414_predictable_baseline_A-00020.h5"
+#file_path = r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-06-13T17-31-24McsRecording_MEA23414_predictable_baseline_A-00020.h5"
 # Regex pattern to extract the date, MEA ID, and the last segment (predictable or control)
 
 def create_raster_plot(file_path):
@@ -27,7 +26,7 @@ def create_raster_plot(file_path):
         all_max_values_time = []
 
         # Iterate over electrodes
-        for electrode in range(0, 120):  # Assuming electrodes range from 1 to 120
+        for electrode in range(20, 25):  # Assuming electrodes range from 1 to 120
             print(electrode)
             analyzer = ChannelAnalyzer(file_path, electrode)
             analyzer.get_channel_data(electrode)

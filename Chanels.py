@@ -68,8 +68,8 @@ class ChannelAnalyzer:
         self.dt = 1 / sampling_rate
 
         # Load the data
-        self.data = RawData(self.file_path)  # change this
-        self.analog_stream = self.data.recordings[0].analog_streams[2]
+        self.data = RawData(self.file_path)  
+        self.analog_stream = self.data.recordings[0].analog_streams[3]# the filter data is in 3
         self.channel_data = self.analog_stream.channel_data
         self.date = self.data.date
 
@@ -110,7 +110,7 @@ class ChannelAnalyzer:
             self.active_check()
             self.find_Average_Spikes()
             self.Spikes_rate = self.num_of_spikes / len(self.time_vec)
-            if self.find_burst(3, 3):  # change this to be - the num of burst 50 milisec
+            if self.find_burst():  # change this to be - the num of burst 50 milisec
                 self.Num_Of_Bursts = len(self.Group_Of_Bursts)
                 self.burst_rate = self.Num_Of_Bursts / len(self.time_vec)
             if self.num_of_spikes >= 10:
@@ -133,7 +133,7 @@ class ChannelAnalyzer:
     def find_spikes(self, threshold_factor=6):  # change the formula to find spiks
         overall_std_deviation = np.std(self.samples_vec)
         threshold_value = threshold_factor * overall_std_deviation
-        mask = np.abs(self.samples_vec) > threshold_value
+        mask = np.abs(self.samples_vec- np.mean(self.samples_vec)) > threshold_value
         if np.all(~mask):
             self.spikes_samples_vec = np.array([])
             self.spikes_samples_vec_time = np.array([])
@@ -181,7 +181,7 @@ class ChannelAnalyzer:
             self.Average_Spikes = np.mean([abs(x) for x in self.max_values])
         return self.Average_Spikes
 
-    def find_burst(self, max_dist, min_spikes):  # the dist is milisec?
+    def find_burst(self, max_dist=0.05*10**4, min_spikes=3):  # the dist is milisec?
         count = 0
         sum = 0
         temp = []
@@ -211,19 +211,20 @@ class ChannelAnalyzer:
     def find_start_burst_time(self):
         self.burst_start_time = []
         for i in range(1, len(self.Group_Of_Bursts) - 1):
-            self.burst_start_time.append(self.Group_Of_Bursts[1][1])
+            self.burst_start_time.append(self.Group_Of_Bursts[i][1])
         return 0
 
-    def plot_signal(self, record_type):
+    def plot_signal(self):
         output_dir = 'spikes_and_barst'
         os.makedirs(output_dir, exist_ok=True)
         for value in self.max_values_time:
             value = value / (10 ** 4)
             plt.axvline(x=value, ymin=0, ymax=0.06, color='r', linestyle='-')
 
-        for v in self.burst_start_time:
-            v = v / (10 ** 4)
-            plt.axvline(x=value, ymin=0.94, ymax=1, color='b', linestyle='-')
+        if self.Group_Of_Bursts!=[]:
+            for v in self.burst_start_time:
+                v=v/10**4
+                plt.axvline(x=v, ymin=0.94, ymax=1, color='b', linestyle='-')
 
         pattern = r'(\d{4}-\d{2}-\d{2})T\d{2}-\d{2}-\d{2}McsRecording_MEA(\d+)_(predictable|control)_(afterstim|baseline)'
 
@@ -241,7 +242,7 @@ class ChannelAnalyzer:
             graph_name = "dug"
         plt.plot(self.time_vec, self.samples_vec)
         plt.xlabel('Time (s)')
-        plt.ylabel('Amplitude (microV)')
+        plt.ylabel('Amplitude (V)')
         plt.title(graph_name)
         plt.grid(True)
         plt.savefig(graph_name)
