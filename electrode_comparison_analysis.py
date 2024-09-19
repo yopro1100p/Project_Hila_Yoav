@@ -21,8 +21,7 @@ data is only written when the file doesn't exist or when there are updates.
 
 def recording_comparison(file_path_compare1, file_path_compare2):
     # Extract the date, MEA number, and type (predictable/controller)
-    match = re.search(r'(\d{4}-\d{2}-\d{2})T\d{2}-\d{2}-\d{2}McsRecording_MEA(\d+)_(predictable|control)',
-                      file_path_compare2)
+    match = re.search(r'(\d{4}-\d{2}-\d{2})T\d{2}-\d{2}-\d{2}McsRecording_MEA(\d+)_(predictable|control)',file_path_compare2)
     if match:
         date, mea_number, file_type = match.groups()
         output_file_base = f'{date}_{mea_number}_{file_type}'

@@ -1,13 +1,15 @@
 import os
+
 import h5py
 import matplotlib.pyplot as plt
 import McsPy
 import numpy as np
 import pandas as pd
 from McsPy.McsData import RawData
+
 from Chanels import ChannelAnalyzer
-from heatmap import plot_heatmap
 from electrode_comparison_analysis import recording_comparison
+from heatmap import plot_heatmap
 from raster_plot import create_raster_plot
 from statistic_test import perform_statistical_tests
 
@@ -61,7 +63,7 @@ if action == 2:
     os.makedirs(output_dir, exist_ok=True)
 
     # Load spike counts from Excel file
-    excel_file = r"C:\Users\user\Desktop\Project_Hila_Yoav\experiance\2024-05-21_21009_predictable.xlsx"
+    excel_file = '2024-02-01_21009_predictable.xlsx'
     df = pd.read_excel(excel_file)
 
     # Plot and save the baseline heatmap
