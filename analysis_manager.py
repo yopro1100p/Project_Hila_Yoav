@@ -61,8 +61,8 @@ if action == 2:
 
 # create raster plot
 if action == 3:
-    print('enter raw data path:')
-    raw_data_path= r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-02-01T14-33-39McsRecording_MEA21009_predictable_baseline_A-00020.h5"
+    
+    raw_data_path= r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-02-01T14-54-37McsRecording_MEA21009_predictable_afterstim_A-00020.h5"
     create_raster_plot(raw_data_path)
 
 # add file electrode_comparison_analysis
