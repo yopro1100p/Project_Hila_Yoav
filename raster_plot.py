@@ -26,7 +26,7 @@ def create_raster_plot(file_path):
         all_max_values_time = []
 
         # Iterate over electrodes
-        for electrode in range(20, 25):  # Assuming electrodes range from 1 to 120
+        for electrode in range(0, 120):  # Assuming electrodes range from 1 to 120
             print(electrode)
             analyzer = ChannelAnalyzer(file_path, electrode)
             analyzer.get_channel_data(electrode)
