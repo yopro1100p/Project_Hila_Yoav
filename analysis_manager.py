@@ -11,7 +11,7 @@ from Chanels import ChannelAnalyzer
 from electrode_comparison_analysis import recording_comparison
 from heatmap import plot_heatmap
 from raster_plot import create_raster_plot
-from statistic_test import perform_statistical_tests
+from statistic_test import combine_and_compare
 
 # File explanation
 """
@@ -36,9 +36,6 @@ sampling_rate = 10000  # sample rate in Hz
 file_path_compare1 = r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\2024-06-13T14-15-16McsRecording_MEA21009_predictable_baseline_A-00020.h5"# Replace with the actual path to baseline file
 file_path_compare2 = r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\2024-06-13T14-35-58McsRecording_MEA21009_predictable_afterstim_A-00020.h5"# Replace with the actual path to stimulus file
 
-# Files for static tests
-predictable_file = '2024-02-01_21009_predictable.xlsx'
-controller_file = '2024-02-01_20490_control.xlsx'
 
 
 print("choose action: \n1: plot signal \n2: plot_heatmap\n3: raster_plot\n4: electrode_comparison_analysis")
@@ -58,21 +55,9 @@ if action == 1:
 
 # plot heat map
 if action == 2:
-    # Ensure the 'heatmap' directory exists
-    output_dir = 'heatmap'
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Load spike counts from Excel file
-    excel_file = '2024-02-01_21009_predictable.xlsx'
-    df = pd.read_excel(excel_file)
-
-    # Plot and save the baseline heatmap
-    spike_counts_baseline = dict(zip(df['Electrode'], df['num_of_spikes_baseline']))
-    plot_heatmap(spike_counts_baseline, 'baseline', excel_file, output_dir)
-
-    # Plot and save the afterstim heatmap
-    spike_counts_stim = dict(zip(df['Electrode'], df['num_of_spikes_stim']))
-    plot_heatmap(spike_counts_stim, 'afterstim', excel_file, output_dir)
+    print('enter the name of the file:')
+    ex_name = input()
+    plot_heatmap(ex_name)
 
 # create raster plot
 if action == 3:
@@ -83,4 +68,9 @@ if action == 4:
     recording_comparison(file_path_compare1, file_path_compare2)
 
 if action == 5:
-    perform_statistical_tests(predictable_file, controller_file)
+    # Set your directories for predictable and controller files
+    predictable_directory = './predictable_folder'  # Replace with the path to the folder with predictable files
+    controller_directory = './controller_folder'    # Replace with the path to the folder with controller files
+
+    # Combine and compare data from all files
+    combine_and_compare(predictable_directory, controller_directory)
