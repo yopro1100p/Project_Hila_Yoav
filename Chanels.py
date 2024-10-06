@@ -217,9 +217,10 @@ class ChannelAnalyzer:
     def plot_signal(self):
         output_dir = 'spikes_and_barst'
         os.makedirs(output_dir, exist_ok=True)
-        for value in self.max_values_time:
-            value = value / (10 ** 4)
-            plt.axvline(x=value, ymin=0, ymax=0.06, color='r', linestyle='-')
+        if self.max_values_time!=[]:
+            for value in self.max_values_time:
+                value = value / (10 ** 4)
+                plt.axvline(x=value, ymin=0, ymax=0.06, color='r', linestyle='-')
 
         if self.Group_Of_Bursts!=[]:
             for v in self.burst_start_time:

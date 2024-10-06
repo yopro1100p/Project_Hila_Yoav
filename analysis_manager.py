@@ -45,12 +45,12 @@ action = int(input())
 
 # plot signal
 if action == 1:
+    raw_data_path= r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-05-21T15-43-17McsRecording_MEA21009_predictable_afterstim_A-00020.h5"
     print("choose channel id:")
-    channel_id = int(input())  # Example channel ID
+    channel_id = input()  # Example channel ID
 
     # Initialize the ChannelAnalyzer for the selected channel
-    channel_analyzer = ChannelAnalyzer(raw_data_path, channel_id, sampling_rate)
-    print (channel_analyzer.Group_Of_Bursts)
+    channel_analyzer = ChannelAnalyzer(raw_data_path, channel_id)
     channel_analyzer.plot_signal()
 
 # plot heat map
@@ -62,7 +62,7 @@ if action == 2:
 # create raster plot
 if action == 3:
     
-    raw_data_path= r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-06-13T16-38-48McsRecording_MEA21432_control_afterstim_A-00020.h5"
+    raw_data_path= r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-06-13T17-53-27McsRecording_MEA23414_predictable_afterstim_A-00020.h5"
     create_raster_plot(raw_data_path)
 
 # add file electrode_comparison_analysis
