@@ -31,26 +31,29 @@ sampling_rate = 10000  # sample rate in Hz
 
 # path to file that we want to run action 1-3
 # raw_data_path = "C:/Users/user/Desktop/bar ilan/Forth year/project/your_file.h5"  # YOAV'S LINK
-#raw_data_path = r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-05-21T15-43-17McsRecording_MEA21009_predictable_afterstim_A-00020.h5"
+raw_data_path = r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-02-01T16-48-32McsRecording_MEA20490_control_afterstim_A-00020.h5"
 # Paths to the files thst we want to run action 4(compare between files)
-file_path_compare1 = r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\2024-06-13T14-15-16McsRecording_MEA21009_predictable_baseline_A-00020.h5"# Replace with the actual path to baseline file
-file_path_compare2 = r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\2024-06-13T14-35-58McsRecording_MEA21009_predictable_afterstim_A-00020.h5"# Replace with the actual path to stimulus file
+file_path_compare1 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-06-13T14-15-16McsRecording_MEA21009_predictable_baseline_A-00020.h5"  # Replace with the actual path to baseline file
+file_path_compare2 = "C:/Users/dvirg/OneDrive/Desktop/toar1/year4/project/CODE/2024-06-13T14-35-58McsRecording_MEA21009_predictable_afterstim_A-00020.h5"  # Replace with the actual path to stimulus file
+
+# Files for static tests
+predictable_file = '2024-02-01_21009_predictable.xlsx'
+controller_file = '2024-02-01_20490_control.xlsx'
 
 
-
-print("choose action: \n1: plot signal \n2: plot_heatmap\n3: raster_plot\n4: statistic_test\n5: electrode_comparison_analysis")
+print("choose action: \n1: plot signal \n2: plot_heatmap\n3: raster_plot\n4: electrode_comparison_analysis")
 
 # plot heatmap action
 action = int(input())
 
 # plot signal
 if action == 1:
-    raw_data_path= r"C:\Users\dvirg\OneDrive\Desktop\toar1\year4\project\CODE\recorders\2024-05-21T15-43-17McsRecording_MEA21009_predictable_afterstim_A-00020.h5"
     print("choose channel id:")
-    channel_id = input()  # Example channel ID
+    channel_id = int(input())  # Example channel ID
 
     # Initialize the ChannelAnalyzer for the selected channel
-    channel_analyzer = ChannelAnalyzer(raw_data_path, channel_id)
+    channel_analyzer = ChannelAnalyzer(raw_data_path, channel_id, sampling_rate)
+    print (channel_analyzer.Group_Of_Bursts)
     channel_analyzer.plot_signal()
 
 # plot heat map
