@@ -102,9 +102,9 @@ def plot_mean_std_for_each_metric(predictable_df, controller_df, std_columns, re
             ax.text(0.5, max_height + 0.02 * max_height, '*', ha='center', color='red', fontsize=12)
 
         # Add custom annotations to explain the significance markers
-        ax.text(1.05, 1, '* = Statistically Significant Difference', transform=ax.transAxes, fontsize=10, color='red')
-        ax.text(1.05, 0.95, 'Red Line = Connects bars with significant differences', transform=ax.transAxes, fontsize=10, color='red')
-        ax.text(1.05, 0.90, 'Black Lines = Standard Deviation', transform=ax.transAxes, fontsize=10, color='black')
+        #ax.text(1.05, 1, '* = Statistically Significant Difference', transform=ax.transAxes, fontsize=10, color='red')
+        #ax.text(1.05, 0.95, 'Red Line = Connects bars with significant differences', transform=ax.transAxes, fontsize=10, color='red')
+        #ax.text(1.05, 0.90, 'Black Lines = Standard Deviation', transform=ax.transAxes, fontsize=10, color='black')
 
         # Save the plot to a file in the 'statistical_test_result' folder
         plot_file_name = os.path.join(output_folder, f"{col}_mean_std_comparison_plot.png")
