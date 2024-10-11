@@ -1,5 +1,6 @@
 import os
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
@@ -52,6 +53,66 @@ def perform_statistical_tests(predictable_df, controller_df):
     results_df.to_excel(output_file_name)
 
     print(f"Results saved to {output_file_name}")
+
+    # Plotting the mean and standard deviation for each metric
+    plot_mean_std_for_each_metric(predictable_df, controller_df, std_columns, results_df)
+
+
+def plot_mean_std_for_each_metric(predictable_df, controller_df, std_columns, results_df):
+    # Create the output folder for plots if it doesn't exist
+    output_folder = 'statistical_test_result'
+    os.makedirs(output_folder, exist_ok=True)
+
+    # Loop through each column to create a separate plot
+    for col in std_columns:
+        # Calculate the mean and standard deviation for the current column
+        mean_predictable = predictable_df[col].mean()
+        std_predictable = predictable_df[col].std()
+
+        mean_controller = controller_df[col].mean()
+        std_controller = controller_df[col].std()
+
+        # Create the plot
+        fig, ax = plt.subplots(figsize=(8, 5))
+
+        # Bar positions
+        bar_positions = np.arange(2)
+
+        # Plot bars for predictable and controller data
+        bars = ax.bar(bar_positions, [mean_predictable, mean_controller], 
+                      yerr=[std_predictable, std_controller], 
+                      capsize=5, color=['skyblue', 'lightgreen'], 
+                      edgecolor='black')
+
+        # Add labels and title
+        ax.set_xlabel('Groups')
+        ax.set_ylabel('Mean Values')
+        ax.set_title(f'Mean and Standard Deviation for {col}')
+        ax.set_xticks(bar_positions)
+        ax.set_xticklabels(['Predictable', 'Control'])
+        
+        # Add grid
+        ax.grid(True)
+
+        # Check if the test result for this column was significant
+        if results_df.loc[col, 'significance'] == 'Significant':
+            # Draw a red line connecting the two bars
+            max_height = max(mean_predictable + std_predictable, mean_controller + std_controller) + 0.05 * max(mean_predictable + std_predictable, mean_controller + std_controller)
+            ax.plot([0, 1], [max_height, max_height], color='red', linewidth=2)
+            ax.text(0.5, max_height + 0.02 * max_height, '*', ha='center', color='red', fontsize=12)
+
+        # Add custom annotations to explain the significance markers
+        ax.text(1.05, 1, '* = Statistically Significant Difference', transform=ax.transAxes, fontsize=10, color='red')
+        ax.text(1.05, 0.95, 'Red Line = Connects bars with significant differences', transform=ax.transAxes, fontsize=10, color='red')
+        ax.text(1.05, 0.90, 'Black Lines = Standard Deviation', transform=ax.transAxes, fontsize=10, color='black')
+
+        # Save the plot to a file in the 'statistical_test_result' folder
+        plot_file_name = os.path.join(output_folder, f"{col}_mean_std_comparison_plot.png")
+        plt.tight_layout()
+        plt.savefig(plot_file_name)
+
+        print(f"Plot saved to {plot_file_name}")
+        plt.close(fig)  # Close the figure to avoid display
 
 
 def combine_and_compare(predictable_dir, controller_dir):
